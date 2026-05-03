@@ -11,6 +11,7 @@ jobs:
     name: PHP Syntax (${{ matrix.php }})
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         php: ["7.4", "8.0", "8.1", "8.2", "8.3"]
     steps:
@@ -19,7 +20,17 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
       - name: PHP syntax check
-        run: find . -name "*.php" -not -path "./.git/*" -exec php -l {} \; | grep -v "^No syntax errors" || true
+        run: |
+          set -e
+          fail=0
+          while IFS= read -r -d '' file; do
+            if ! php -l "$file" >/dev/null 2>&1; then
+              echo "SYNTAX ERROR in $file"
+              php -l "$file" || true
+              fail=1
+            fi
+          done < <(find . -name "*.php" -not -path "./.git/*" -not -path "./vendor/*" -not -path "./node_modules/*" -print0)
+          exit $fail
 
   phpcs:
     name: PHPCS (WordPress Coding Standards)
@@ -29,10 +40,17 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: "8.2"
-          tools: phpcs, wp-coding-standards/wpcs
-      - name: Configure PHPCS
-        run: phpcs --config-set installed_paths $(composer config home)/vendor/wp-coding-standards/wpcs
-        continue-on-error: true
+          coverage: none
+          tools: composer:v2
+      - name: Install PHPCS + WPCS
+        run: |
+          composer global require --no-interaction --no-progress \
+            "squizlabs/php_codesniffer=^3.10" \
+            "wp-coding-standards/wpcs=^3.1" \
+            "phpcsstandards/phpcsutils=^1.0" \
+            "phpcsstandards/phpcsextra=^1.2"
+          echo "$(composer global config bin-dir --absolute)" >> $GITHUB_PATH
+      - name: Configure PHPCS standards path
+        run: phpcs --config-set installed_paths $(composer global config home)/vendor/wp-coding-standards/wpcs,$(composer global config home)/vendor/phpcsstandards/phpcsutils,$(composer global config home)/vendor/phpcsstandards/phpcsextra
       - name: Run PHPCS
-        run: phpcs --standard=WordPress --extensions=php --ignore=assets,vendor . || true
-
+        run: phpcs --standard=WordPress --extensions=php --ignore=assets,vendor,tests .
