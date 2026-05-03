@@ -15,7 +15,7 @@ Same plugin, same `WP_Query` against `post_status=publish` to find the earliest 
 
 - Calculates the year range from your earliest published post to today.
 - Renders a configurable copyright notice via `[auto_copyright]` shortcode or `thisismyurl_autocopyright()` template tag.
-- Per-article variant via `thisismyurl_autocopyright_article()` for individual posts inside the Loop.
+- Per-article variant via `[thisismyurl_autocopyright_article]` shortcode (kept as the legacy long-form tag) or `thisismyurl_autocopyright_article()` template tag for individual posts inside the Loop.
 - Format string supports `#c#` (©), `#y#` (current year), `#sitename#`, `#from#` (earliest year), `#to#` (current year).
 
 ## What it doesn't do
