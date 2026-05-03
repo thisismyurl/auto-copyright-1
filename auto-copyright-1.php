@@ -35,18 +35,6 @@ function thisismyurl_autocopyright_article( $arg = NULL ) {
 
 	global $post;
 
-	$options = explode( "&",$options );
-
-	foreach ( $options as $option ) {
-
-		$parts = explode( "=",$option );
-		$options[$parts[0]] = $parts[1];
-
-	}
-
-	if ( $options['format'] )
-		$option['format'] = $options['format'];
-
 	$format = str_replace( '#c#', '&copy;', $option['format'] );
 	$format = str_replace( '#y#', get_the_date( 'Y' ), $format );
 	$format = str_replace( '#sitename#', get_bloginfo( 'sitename' ), $format );
@@ -109,9 +97,12 @@ function thisismyurl_autocopyright( $format_result=NULL ) {
 class thisismyurlAutoCopyrightWidget extends WP_Widget
 {
 
-	function thisismyurlAutoCopyrightWidget(){
-		$widget_ops = array( 'classname' => 'widget_thisismyurl_autocopyright', 'description' => __( 'Adds a automatic copyright notice to your widget area' ) );
-		$this->WP_Widget( 'thisismyurlAutoCopyrightWidget', __( 'Auto Copyright' ), $widget_ops, $control_ops );
+	public function __construct() {
+		$widget_ops = array(
+			'classname'   => 'widget_thisismyurl_autocopyright',
+			'description' => __( 'Adds a automatic copyright notice to your widget area' ),
+		);
+		parent::__construct( 'thisismyurl_autocopyright', __( 'Auto Copyright' ), $widget_ops );
 	}
 
 	function form($instance)
@@ -125,8 +116,8 @@ class thisismyurlAutoCopyrightWidget extends WP_Widget
 	if ( empty( $format ) )
 		$format = $default_format;
 ?>
-  <p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e( 'Title:');?> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo attribute_escape($title); ?>" /></label></p>
-  <p><label for="<?php echo $this->get_field_id('format'); ?>"><?php _e( 'Format:');?> <input class="widefat" id="<?php echo $this->get_field_id('format'); ?>" name="<?php echo $this->get_field_name('format'); ?>" type="text" value="<?php echo attribute_escape($format); ?>" /></label><br/>
+  <p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e( 'Title:');?> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo esc_attr($title); ?>" /></label></p>
+  <p><label for="<?php echo $this->get_field_id('format'); ?>"><?php _e( 'Format:');?> <input class="widefat" id="<?php echo $this->get_field_id('format'); ?>" name="<?php echo $this->get_field_name('format'); ?>" type="text" value="<?php echo esc_attr($format); ?>" /></label><br/>
   <em><a href="<?php echo plugins_url( 'readme.txt', __FILE__ );?>"><?php _e( 'Learn about format options.');?></a></em></p>
 
 <?php
@@ -145,7 +136,7 @@ class thisismyurlAutoCopyrightWidget extends WP_Widget
     echo $before_widget;
     $title = empty( $instance['title'] ) ? ' ' : apply_filters( 'widget_title', $instance['title']) ;
 
-	$format = $intance[ 'format' ];
+	$format = $instance['format'];
 	global $default_format;
 
 	if ( empty( $format ) )
