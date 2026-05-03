@@ -1,11 +1,17 @@
 <?php
 /*
 Plugin Name: Auto Copyright
-Plugin URI: http://thisismyurl.com/downloads/auto-copyright-1/
+Plugin URI: https://thisismyurl.com/downloads/auto-copyright-1/
 Description: Automates the copyright notice for websites.
 Author: Christopher Ross
-Author URI: http://thisismyurl.com/
-Version: 14.11
+Author URI: https://thisismyurl.com/
+Version: 0.6123
+Requires at least: 5.6
+Requires PHP: 7.4
+License: GPL-2.0-or-later
+License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+Text Domain: auto-copyright-1
+Domain Path: /languages
 */
 
 /**
@@ -13,11 +19,11 @@ Version: 14.11
  *
  * This file contains all the logic required for the plugin
  *
- * @link		http://wordpress.org/extend/plugins/auto-copyright-1/
+ * @link		https://wordpress.org/plugins/auto-copyright-1/
  *
  * @package 	Auto Copyright
- * @copyright	Copyright (c) 2008, Chrsitopher Ross
- * @license		http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU General Public License, v2 (or newer)
+ * @copyright	Copyright (c) 2008, Christopher Ross
+ * @license		https://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU General Public License, v2 (or newer)
  *
  * @since 		Auto Copyright 1.0
  */

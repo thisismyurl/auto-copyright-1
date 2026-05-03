@@ -1,11 +1,13 @@
 === Auto Copyright ===
-Contributors: phillcoxon
-Plugin URI: http://phillcoxon.com/wp
-Tags: blog, administration, copyright, links, footer, plugin, admin, syndication, aggregation, full text, theft, protection, splogs, theme, footer
-Donate link:  http://phillcoxon.com/wp
-Requires at least: 3.2.0
-Tested up to: 4.1.0
-Stable tag: 14.11
+Contributors: thisismyurl, phillcoxon
+Plugin URI: https://thisismyurl.com/downloads/auto-copyright-1/
+Tags: copyright, footer, shortcode, widget, year
+Requires at least: 5.6
+Requires PHP: 7.4
+Tested up to: 6.8
+Stable tag: 0.6123
+License: GPL-2.0-or-later
+License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
 Automatically generates a copyright notice based on the first and last post published in the WordPress database.
 
@@ -19,16 +21,11 @@ The plugin includes the following theme functions:
 
 * <code>thisismyurl_autocopyright( 'Copyright ( #c# ) #from# - #to#' )</code> - Will display the full copyright for the site
 
-This plugin is maintained by Phill Coxon (http://phillcoxon.com) or you can find him on Twitter at http://twitter.com/phillcoxon/
+This plugin was originally written by Christopher Ross in 2008, maintained by Phill Coxon during the WordPress 4.x era, and is now maintained again by Christopher at https://thisismyurl.com/.
 
 == Installation ==
 
-To install the plugin, please upload the folder to your plugins folder and active the plugin.
-
-== Screenshots ==
-
-== Updates ==
-
+To install the plugin, please upload the folder to your plugins folder and activate the plugin.
 
 == Frequently Asked Questions ==
 
@@ -48,15 +45,22 @@ You can change how the plugin functions by adding the format option to the funct
 
 <code>echo thisismyurl_autocopyright('format=Copyright (#c#) #from# - #to#');</code>
 
-== Donations ==
-If you would like to donate to help support future development of this tool, please visit http://phillcoxon.com/wp/
-
-== Original Developer ==
-
-This plugin was originally created by Christopher Ross before being taken over by Phill Coxon in Jan 2016
-
-
 == Change Log ==
+
+= 0.6123 (May 3, 2026) =
+
+* Maintenance returns to Christopher Ross
+* Fix PHP-fatal: drop double-parse of $arg in shortcode handler
+* Fix PHP-fatal: replace PHP4 widget constructor with __construct() / parent::__construct()
+* Fix widget output: $intance typo prevented user-chosen format from rendering
+* Replace removed attribute_escape() with esc_attr()
+* Escape widget output (esc_attr on field IDs/names, wp_kses_post on rendered notice)
+* Replace extract($args) anti-pattern with explicit $args[*] reads
+* Register clean [auto_copyright] shortcode (long thisismyurl_autocopyright_article tag kept as alias)
+* Add ABSPATH guard, text domain loader, full plugin header, i18n on all strings
+* Fix get_bloginfo('sitename') -> get_bloginfo('name')
+* Cache earliest post year in a transient, invalidated on save_post
+* Update readme.txt: contributors, tags trimmed to 5, Tested up to 6.8, Requires PHP 7.4
 
 = 2.2.0 (March 31st, 2013) =
 
@@ -115,8 +119,3 @@ This plugin was originally created by Christopher Ross before being taken over b
 
 = 0.2.3 (2009-03-26) =
 * Happy Birthday to me
-
-
-== Screenshots ==
-
-Empty
