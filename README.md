@@ -35,3 +35,8 @@ Christopher Ross, on the open web since 1996 and on WordPress since 2007. More a
 ## License
 
 GPL-2.0-or-later. The original copyright remains with Christopher Ross (2008); maintenance contributions through 2016 are credited to Phill Coxon in the changelog.
+
+
+---
+*This project follows the [10 Core Pillars](PILLARS.md). Support quality work [here](https://github.com/sponsors/thisismyurl).*
+
