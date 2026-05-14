@@ -22,9 +22,9 @@
 
 declare( strict_types=1 );
 
-defined( 'ABSPATH' ) || exit;
-
 namespace ThisIsMyURL\AutoCopyright {
+
+defined( 'ABSPATH' ) || exit;
 
 	/**
 	 * Default format string used when no format is supplied.
