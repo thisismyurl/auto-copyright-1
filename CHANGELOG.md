@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.6143] — 2026-05-23
+
+### Changed
+- Promoted to a full release (class 1). The `0.6xxx` line was pre-release on the `x.Yddd` scheme.
+- Standardized the donation link to GitHub Sponsors (`https://github.com/sponsors/thisismyurl`).
+
 ## [0.6123] - 2026-05-03
 
 Maintenance returns to Christopher Ross. First modernization pass after the WordPress 4.x dormancy.

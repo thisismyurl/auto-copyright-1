@@ -1,11 +1,12 @@
 === Auto Copyright ===
 Contributors: thisismyurl, phillcoxon
+Donate link: https://github.com/sponsors/thisismyurl
 Plugin URI: https://thisismyurl.com/downloads/auto-copyright-1/
 Tags: copyright, footer, shortcode, widget, year
 Requires at least: 5.6
 Requires PHP: 7.4
 Tested up to: 7.0
-Stable tag: 0.6123
+Stable tag: 1.6143
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
@@ -46,6 +47,10 @@ You can change how the plugin functions by adding the format option to the funct
 <code>echo thisismyurl_autocopyright('format=Copyright (#c#) #from# - #to#');</code>
 
 == Change Log ==
+
+= 1.6143 =
+* First full release (class 1). The 0.6xxx line was pre-release on the `x.Yddd` scheme.
+* Standardized the donation link to GitHub Sponsors.
 
 = 0.6123 (May 3, 2026) =
 
