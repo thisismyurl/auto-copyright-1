@@ -1,4 +1,4 @@
-# Auto Copyright
+# This Is My URL - Auto Copyright
 
 [![CI](https://github.com/thisismyurl/auto-copyright-1/actions/workflows/ci.yml/badge.svg)](https://github.com/thisismyurl/auto-copyright-1/actions/workflows/ci.yml) [![WordPress Tested](https://img.shields.io/badge/WordPress-4.1%2B-blue)](https://wordpress.org/) [![License](https://img.shields.io/badge/License-GPL--2.0-blue)](LICENSE)
 

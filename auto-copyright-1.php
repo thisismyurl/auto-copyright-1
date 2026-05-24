@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:  Auto Copyright
+ * Plugin Name:  This Is My URL - Auto Copyright
  * Plugin URI:   https://thisismyurl.com/downloads/auto-copyright-1/
  * Description:  Automates the copyright notice for websites.
  * Author:       Christopher Ross
@@ -293,6 +293,22 @@ defined( 'ABSPATH' ) || exit;
 		);
 	}
 	\add_action( 'init', __NAMESPACE__ . '\load_textdomain' );
+
+	// -------------------------------------------------------------------------
+	// Plugin-row action links
+	// -------------------------------------------------------------------------
+
+	/**
+	 * Append a Sponsor link to the plugin row actions.
+	 *
+	 * @param array<string> $links Existing action links.
+	 * @return array<string>
+	 */
+	function add_action_links( array $links ): array {
+		$links[] = '<a href="' . \esc_url( 'https://github.com/sponsors/thisismyurl' ) . '" target="_blank" rel="noopener noreferrer">' . \esc_html__( 'Sponsor', 'auto-copyright-1' ) . '</a>';
+		return $links;
+	}
+	\add_filter( 'plugin_action_links_' . \plugin_basename( __FILE__ ), __NAMESPACE__ . '\add_action_links' );
 
 } // end namespace ThisIsMyURL\AutoCopyright
 

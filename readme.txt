@@ -1,4 +1,4 @@
-=== Auto Copyright ===
+=== This Is My URL - Auto Copyright ===
 Contributors: thisismyurl, phillcoxon
 Donate link: https://github.com/sponsors/thisismyurl
 Plugin URI: https://thisismyurl.com/downloads/auto-copyright-1/
