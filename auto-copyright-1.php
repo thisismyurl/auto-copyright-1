@@ -8,7 +8,7 @@
  * Version:      1.6147
  * Requires at least: 5.6
  * Requires PHP: 7.4
- * Tested up to: 6.9
+ * Tested up to: 7.0
  * License:      GPL-2.0-or-later
  * License URI:  https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:  auto-copyright-1
@@ -52,19 +52,24 @@ defined( 'ABSPATH' ) || exit;
 		$option = \wp_parse_args( $arg, $defaults );
 
 		$format = \str_replace( '#c#', '&copy;', $option['format'] );
-		$format = \str_replace( '#y#', \get_the_date( 'Y' ), $format );
+		$format = \str_replace( '#y#', (string) \get_the_date( 'Y' ), $format );
 		$format = \str_replace( '#sitename#', \get_bloginfo( 'name' ), $format );
 
-		return $format;
+		return \wp_kses_post( $format );
 	}
 	\add_shortcode( 'thisismyurl_autocopyright_article', __NAMESPACE__ . '\thisismyurl_autocopyright_article' );
 
 	/**
-	 * Site-wide copyright notice spanning earliest published post to most recent.
+	 * Site-wide copyright notice spanning earliest published post to the current year.
 	 *
-	 * @param string|null $format_result Format string. Supports #c# #from# #to# placeholders.
+	 * `#from#` resolves to the earliest published-post year; `#to#` and `#y#` both
+	 * resolve to the current (timezone-correct) year. When the site has no published
+	 * posts, or the earliest post is from the current year, the range collapses to a
+	 * single year so the notice reads "Copyright ( © ) 2026" rather than an empty span.
+	 *
+	 * @param string|null $format_result Format string. Supports #c# #from# #to# #y# placeholders.
 	 *                                   Pass null to use the DEFAULT_FORMAT constant.
-	 * @return string Rendered notice.
+	 * @return string Rendered, escaped notice safe for echo.
 	 */
 	function thisismyurl_autocopyright( ?string $format_result = null ): string {
 		if ( null === $format_result || '' === $format_result ) {
@@ -76,11 +81,22 @@ defined( 'ABSPATH' ) || exit;
 		$to    = $years['to'];
 
 		$format_result = \str_replace( 'format=', '', $format_result );
-		$format_result = \str_replace( '#from#', $from, $format_result );
+
+		// Collapse "#from# - #to#" to a single year when there is no earlier year to
+		// span from — either the site has no published posts, or the earliest post is
+		// from the current year. This avoids "©  - 2026" and "© 2026 - 2026".
+		if ( '' === $from || $from === $to ) {
+			$format_result = \str_replace( '#from# - #to#', $to, $format_result );
+			$format_result = \str_replace( '#from#', $to, $format_result );
+		} else {
+			$format_result = \str_replace( '#from#', $from, $format_result );
+		}
+
 		$format_result = \str_replace( '#to#', $to, $format_result );
+		$format_result = \str_replace( '#y#', $to, $format_result );
 		$format_result = \str_replace( '#c#', '&copy;', $format_result );
 
-		return $format_result;
+		return \wp_kses_post( $format_result );
 	}
 
 	// -------------------------------------------------------------------------
@@ -88,65 +104,54 @@ defined( 'ABSPATH' ) || exit;
 	// -------------------------------------------------------------------------
 
 	/**
-	 * Earliest / latest published-post years, cached in a transient.
+	 * Earliest published-post year ("from") and the current year ("to").
 	 *
-	 * Invalidated on save_post / deleted_post / trashed_post.
+	 * `from` is the year of the earliest published post, looked up once and cached
+	 * in a transient (invalidated on save_post / deleted_post / trashed_post). `to`
+	 * is always the current, timezone-correct year — computed fresh on every call so
+	 * the notice rolls over at midnight on New Year without waiting for the transient
+	 * to expire. Only `from` is cached; the year lookup is the expensive half.
 	 *
 	 * @return array{from:string,to:string}
 	 */
 	function thisismyurl_autocopyright_get_year_span(): array {
-		$cached = \get_transient( 'thisismyurl_autocopyright_year_span' );
-		if ( false !== $cached && \is_array( $cached ) ) {
-			return $cached;
+		$to = (string) \wp_date( 'Y' );
+
+		$from = \get_transient( 'thisismyurl_autocopyright_from_year' );
+		if ( false === $from ) {
+			$from       = '';
+			$from_posts = \get_posts(
+				array(
+					'post_status'      => 'publish',
+					'order'            => 'ASC',
+					'orderby'          => 'date',
+					'numberposts'      => 1,
+					'fields'           => 'ids',
+					'no_found_rows'    => true,
+					'suppress_filters' => false,
+				)
+			);
+			if ( ! empty( $from_posts ) ) {
+				$from = (string) \get_the_time( 'Y', $from_posts[0] );
+			}
+
+			\set_transient( 'thisismyurl_autocopyright_from_year', $from, \DAY_IN_SECONDS );
 		}
 
-		$from = '';
-		$to   = '';
-
-		$from_posts = \get_posts(
-			array(
-				'post_status'      => 'publish',
-				'order'            => 'ASC',
-				'orderby'          => 'date',
-				'numberposts'      => 1,
-				'fields'           => 'ids',
-				'no_found_rows'    => true,
-				'suppress_filters' => false,
-			)
-		);
-		if ( ! empty( $from_posts ) ) {
-			$from = (string) \get_the_time( 'Y', $from_posts[0] );
-		}
-
-		$to_posts = \get_posts(
-			array(
-				'post_status'      => 'publish',
-				'order'            => 'DESC',
-				'orderby'          => 'date',
-				'numberposts'      => 1,
-				'fields'           => 'ids',
-				'no_found_rows'    => true,
-				'suppress_filters' => false,
-			)
-		);
-		if ( ! empty( $to_posts ) ) {
-			$to = (string) \get_the_time( 'Y', $to_posts[0] );
-		}
-
-		$span = array(
-			'from' => $from,
+		return array(
+			'from' => (string) $from,
 			'to'   => $to,
 		);
-
-		\set_transient( 'thisismyurl_autocopyright_year_span', $span, \DAY_IN_SECONDS );
-
-		return $span;
 	}
 
 	/**
-	 * Invalidate the cached year span when posts change.
+	 * Invalidate the cached earliest-post year when posts change.
+	 *
+	 * Also clears the pre-1.6148 `_year_span` transient so upgraded sites don't
+	 * leave a stale orphan behind.
 	 */
 	function thisismyurl_autocopyright_flush_year_cache(): void {
+		\delete_transient( 'thisismyurl_autocopyright_from_year' );
 		\delete_transient( 'thisismyurl_autocopyright_year_span' );
 	}
 	\add_action( 'save_post',    __NAMESPACE__ . '\thisismyurl_autocopyright_flush_year_cache' );
@@ -232,7 +237,7 @@ defined( 'ABSPATH' ) || exit;
 				</label>
 				<br />
 				<em>
-					<a href="<?php echo \esc_url( \plugins_url( 'readme.txt', __FILE__ ) ); ?>">
+					<a href="<?php echo \esc_url( 'https://thisismyurl.com/downloads/auto-copyright-1/' ); ?>" target="_blank" rel="noopener noreferrer">
 						<?php \esc_html_e( 'Learn about format options.', 'auto-copyright-1' ); ?>
 					</a>
 				</em>
@@ -264,7 +269,8 @@ defined( 'ABSPATH' ) || exit;
 				echo $before_title . \esc_html( $title ) . $after_title; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- theme-supplied chrome.
 			}
 
-			echo \wp_kses_post( thisismyurl_autocopyright( $format ) );
+			// thisismyurl_autocopyright() returns wp_kses_post()-escaped output.
+			echo thisismyurl_autocopyright( $format ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped at source.
 
 			echo isset( $args['after_widget'] ) ? $args['after_widget'] : ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- theme-supplied chrome.
 		}

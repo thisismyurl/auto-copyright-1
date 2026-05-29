@@ -19,8 +19,10 @@ Same plugin, same `WP_Query` against `post_status=publish` to find the earliest 
 
 ## What it doesn't do
 
-- It doesn't store the calculated year — it recalculates on each render. For a high-traffic footer, the calculation is one cached `WP_Query`, so the cost is negligible.
+- It doesn't store the calculated year — it recalculates on each render. For a high-traffic footer, the earliest-post lookup is cached in a transient, so the cost is negligible.
 - It doesn't handle multi-site copyright spans across a network — single-site only.
+
+> **Block themes (FSE):** the bundled "Auto Copyright" widget is a classic `WP_Widget` and does not appear in the Site Editor on block themes (the WordPress 6.x / 7.0 default). On a block theme, use the `[auto_copyright]` shortcode (via a Shortcode block) or the `thisismyurl_autocopyright()` template tag in a footer template part. The widget is retained for classic themes.
 
 ## Requirements
 
