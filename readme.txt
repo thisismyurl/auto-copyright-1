@@ -28,7 +28,7 @@ Format placeholders: <code>#c#</code> (©), <code>#from#</code> (the year of you
 
 The bundled "Auto Copyright" widget is a classic <code>WP_Widget</code> and is therefore legacy: it does not appear in the Site Editor on block themes (the default in WordPress 6.x and 7.0). On a block theme, place the notice with the <code>[auto_copyright]</code> shortcode (via a Shortcode block) or the <code>thisismyurl_autocopyright()</code> template tag in a footer template part. The widget is retained for classic themes only.
 
-This plugin was originally written by Christopher Ross in 2008, maintained by Phill Coxon during the WordPress 4.x era, and is now maintained again by Christopher at https://thisismyurl.com/.
+This plugin was originally written by Christopher Ross in 2008, maintained by Phill Coxon between 2016 and 2019, and is now maintained again by Christopher at https://thisismyurl.com/.
 
 == Installation ==
 
