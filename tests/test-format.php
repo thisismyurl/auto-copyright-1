@@ -9,7 +9,7 @@ class Test_Auto_Copyright_Format extends WP_UnitTestCase {
 
 	public function setUp(): void {
 		parent::setUp();
-		delete_transient( 'thisismyurl_autocopyright_year_span' );
+		delete_transient( 'thisismyurl_autocopyright_from_year' );
 	}
 
 	public function test_default_format_substitutes_copyright_symbol() {
@@ -17,8 +17,10 @@ class Test_Auto_Copyright_Format extends WP_UnitTestCase {
 		$this->assertStringContainsString( '&copy;', $out, 'Default output should contain the copyright entity.' );
 	}
 
-	public function test_custom_format_replaces_year_placeholders() {
-		$post_id = self::factory()->post->create(
+	public function test_to_placeholder_is_the_current_year_not_the_newest_post() {
+		// Earliest post is old; newest published post is also in the past. #to# must
+		// still resolve to the current year, never to the newest post's year.
+		$old = self::factory()->post->create(
 			array(
 				'post_status' => 'publish',
 				'post_date'   => '2010-06-01 12:00:00',
@@ -27,20 +29,31 @@ class Test_Auto_Copyright_Format extends WP_UnitTestCase {
 		self::factory()->post->create(
 			array(
 				'post_status' => 'publish',
-				'post_date'   => '2026-05-03 12:00:00',
+				'post_date'   => '2011-05-03 12:00:00',
 			)
 		);
 
 		// Bust the cache so the transient repopulates with the seeded posts.
-		delete_transient( 'thisismyurl_autocopyright_year_span' );
+		delete_transient( 'thisismyurl_autocopyright_from_year' );
 
-		$out = thisismyurl_autocopyright( '#from# - #to#' );
-		$this->assertSame( '2010 - 2026', $out );
+		$current = (string) wp_date( 'Y' );
+		$out     = thisismyurl_autocopyright( '#from# - #to#' );
+		$this->assertSame( '2010 - ' . $current, $out );
 
-		wp_delete_post( $post_id, true );
+		wp_delete_post( $old, true );
 	}
 
-	public function test_year_span_is_cached_in_transient() {
+	public function test_empty_site_renders_single_current_year() {
+		// No published posts: the range must collapse to a single current year,
+		// not render an empty "  - 2026" span.
+		delete_transient( 'thisismyurl_autocopyright_from_year' );
+
+		$current = (string) wp_date( 'Y' );
+		$out     = thisismyurl_autocopyright( '#from# - #to#' );
+		$this->assertSame( $current, $out );
+	}
+
+	public function test_from_year_is_cached_in_transient() {
 		self::factory()->post->create(
 			array(
 				'post_status' => 'publish',
@@ -48,23 +61,21 @@ class Test_Auto_Copyright_Format extends WP_UnitTestCase {
 			)
 		);
 
-		// First call populates the transient.
+		// First call populates the transient with the earliest-post year.
 		thisismyurl_autocopyright_get_year_span();
-		$cached = get_transient( 'thisismyurl_autocopyright_year_span' );
+		$cached = get_transient( 'thisismyurl_autocopyright_from_year' );
 
-		$this->assertIsArray( $cached );
-		$this->assertArrayHasKey( 'from', $cached );
-		$this->assertArrayHasKey( 'to', $cached );
+		$this->assertSame( '2015', $cached );
 	}
 
 	public function test_save_post_invalidates_year_cache() {
-		set_transient( 'thisismyurl_autocopyright_year_span', array( 'from' => '1999', 'to' => '1999' ), DAY_IN_SECONDS );
+		set_transient( 'thisismyurl_autocopyright_from_year', '1999', DAY_IN_SECONDS );
 
 		self::factory()->post->create( array( 'post_status' => 'publish' ) );
 
 		$this->assertFalse(
-			get_transient( 'thisismyurl_autocopyright_year_span' ),
-			'save_post must flush the cached year span.'
+			get_transient( 'thisismyurl_autocopyright_from_year' ),
+			'save_post must flush the cached earliest-post year.'
 		);
 	}
 

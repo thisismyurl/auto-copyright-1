@@ -6,7 +6,7 @@ Auto-generates a WordPress footer copyright notice spanning your first published
 
 ## The short story
 
-I wrote this plugin in 2008. In January 2016, Phill Coxon took it over and maintained it through the WordPress 4.x era. The plugin had been quiet for a while, and I've brought it back home to keep it working on modern WordPress.
+I wrote this plugin in 2008. In January 2016, Phill Coxon took it over and maintained it between 2016 and 2019. The plugin had been quiet for a while, and I've brought it back home to keep it working on modern WordPress.
 
 Same plugin, same `WP_Query` against `post_status=publish` to find the earliest post date, same year-span output, same shortcode and template-tag entry points. The maintenance is mine again.
 
@@ -19,8 +19,10 @@ Same plugin, same `WP_Query` against `post_status=publish` to find the earliest 
 
 ## What it doesn't do
 
-- It doesn't store the calculated year — it recalculates on each render. For a high-traffic footer, the calculation is one cached `WP_Query`, so the cost is negligible.
+- It doesn't store the calculated year — it recalculates on each render. For a high-traffic footer, the earliest-post lookup is cached in a transient, so the cost is negligible.
 - It doesn't handle multi-site copyright spans across a network — single-site only.
+
+> **Block themes (FSE):** the bundled "Auto Copyright" widget is a classic `WP_Widget` and does not appear in the Site Editor on block themes (the WordPress 6.x / 7.0 default). On a block theme, use the `[auto_copyright]` shortcode (via a Shortcode block) or the `thisismyurl_autocopyright()` template tag in a footer template part. The widget is retained for classic themes.
 
 ## Requirements
 
@@ -91,7 +93,7 @@ This plugin is built and maintained by [This Is My URL](https://thisismyurl.com/
 
 ## License
 
-GPL-2.0-or-later — see [LICENSE](LICENSE) or [gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html). The original copyright remains with Christopher Ross (2008); maintenance contributions through 2016 are credited to Phill Coxon.
+GPL-2.0-or-later — see [LICENSE](LICENSE) or [gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html). The original copyright remains with Christopher Ross (2008); maintenance contributions between 2016 and 2019 are credited to Phill Coxon.
 
 ---
 *This project follows the [10 Core Pillars](PILLARS.md). Support quality work [here](https://github.com/sponsors/thisismyurl).*

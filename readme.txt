@@ -6,15 +6,15 @@ Tags: copyright, footer, shortcode, widget, year
 Requires at least: 5.6
 Requires PHP: 7.4
 Tested up to: 7.0
-Stable tag: 1.6147
+Stable tag: 1.6148.2110
 License: GPL-2.0-or-later
-License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Automatically generates a copyright notice based on the first and last post published in the WordPress database.
 
 == Description ==
 
-Automatically generates a copyright notice based on the first and last post published in the WordPress database. The notice can be placed anywhere in the web site template or included as a short code within a post itself.
+Automatically generates a copyright notice based on the first and last post published in the WordPress database. The notice can be placed anywhere in the web site template or included as a shortcode within a post itself.
 
 The plugin includes the following theme functions:
 
@@ -22,7 +22,13 @@ The plugin includes the following theme functions:
 
 * <code>thisismyurl_autocopyright( 'Copyright ( #c# ) #from# - #to#' )</code> - Will display the full copyright for the site
 
-This plugin was originally written by Christopher Ross in 2008, maintained by Phill Coxon during the WordPress 4.x era, and is now maintained again by Christopher at https://thisismyurl.com/.
+Format placeholders: <code>#c#</code> (©), <code>#from#</code> (the year of your earliest published post), <code>#to#</code> and <code>#y#</code> (the current year), and <code>#sitename#</code> (your site title). When the site has no published posts, or the earliest post is from the current year, the range collapses to a single year.
+
+= Block themes (FSE) =
+
+The bundled "Auto Copyright" widget is a classic <code>WP_Widget</code> and is therefore legacy: it does not appear in the Site Editor on block themes (the default in WordPress 6.x and 7.0). On a block theme, place the notice with the <code>[auto_copyright]</code> shortcode (via a Shortcode block) or the <code>thisismyurl_autocopyright()</code> template tag in a footer template part. The widget is retained for classic themes only.
+
+This plugin was originally written by Christopher Ross in 2008, maintained by Phill Coxon between 2016 and 2019, and is now maintained again by Christopher at https://thisismyurl.com/.
 
 == Installation ==
 
@@ -47,6 +53,13 @@ You can change how the plugin functions by adding the format option to the funct
 <code>echo thisismyurl_autocopyright('format=Copyright (#c#) #from# - #to#');</code>
 
 == Change Log ==
+
+= 1.6148 =
+* Fix the core promise: #to# and #y# now resolve to the current year (timezone-correct via wp_date), matching the documentation, instead of the newest published post's year.
+* Empty/single-year sites now render a single year (e.g. "Copyright ( © ) 2026") instead of an empty or duplicated range.
+* Escape the template-tag/shortcode output path with wp_kses_post() so echo do_shortcode() and the template tags are safe by default.
+* Document the classic widget as legacy and recommend the [auto_copyright] shortcode or template tag on block themes (FSE).
+* Reconcile Tested up to (7.0) and the License URI between the plugin header and readme; point the "Learn about format options" link at the plugin page instead of the raw readme.txt.
 
 = 1.6143 =
 * First full release (class 1). The 0.6xxx line was pre-release on the `x.Yddd` scheme.
