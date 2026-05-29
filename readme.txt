@@ -14,7 +14,7 @@ Automatically generates a copyright notice based on the first and last post publ
 
 == Description ==
 
-Automatically generates a copyright notice based on the first and last post published in the WordPress database. The notice can be placed anywhere in the web site template or included as a short code within a post itself.
+Automatically generates a copyright notice based on the first and last post published in the WordPress database. The notice can be placed anywhere in the web site template or included as a shortcode within a post itself.
 
 The plugin includes the following theme functions:
 
