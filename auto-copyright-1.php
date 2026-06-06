@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:  This Is My URL - Auto Copyright
+ * Plugin Name:  - Auto Copyright by Christopher Ross
  * Plugin URI:   https://thisismyurl.com/downloads/auto-copyright-1/
  * Description:  Automates the copyright notice for websites.
  * Author:       Christopher Ross

@@ -1,4 +1,4 @@
-=== This Is My URL - Auto Copyright ===
+=== - Auto Copyright by Christopher Ross ===
 Contributors: thisismyurl, phillcoxon
 Donate link: https://github.com/sponsors/thisismyurl
 Plugin URI: https://thisismyurl.com/downloads/auto-copyright-1/
