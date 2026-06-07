@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:  - Auto Copyright by Christopher Ross
+ * Plugin Name:  Auto Copyright by Christopher Ross
  * Plugin URI:   https://thisismyurl.com/downloads/auto-copyright-1/
  * Description:  Automates the copyright notice for websites.
  * Author:       Christopher Ross
@@ -292,11 +292,7 @@ defined( 'ABSPATH' ) || exit;
 	 * Load text domain for translations.
 	 */
 	function load_textdomain(): void {
-		\load_plugin_textdomain(
-			'auto-copyright-1',
-			false,
-			\dirname( \plugin_basename( __FILE__ ) ) . '/languages'
-		);
+		\load_plugin_textdomain( 'auto-copyright-1' );
 	}
 	\add_action( 'init', __NAMESPACE__ . '\load_textdomain' );
 
