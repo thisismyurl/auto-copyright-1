@@ -5,7 +5,7 @@
  * Description:  Automates the copyright notice for websites.
  * Author:       Christopher Ross
  * Author URI:   https://thisismyurl.com/
- * Version:      1.6148.2110
+ * Version:      1.6158.1440
  * Requires at least: 5.6
  * Requires PHP: 7.4
  * Tested up to: 7.0
